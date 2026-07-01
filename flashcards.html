@@ -555,14 +555,20 @@ function markAnswer(isCorrect){
   goNext();
 }
 
+function savePos(){
+  try{ localStorage.setItem('it_flashcards_pos_v1', pos); }catch(e){}
+}
+
 function goNext(){
   window.speechSynthesis.cancel();
   pos = (pos + 1) % order.length;
+  savePos();
   render();
 }
 function goPrev(){
   window.speechSynthesis.cancel();
   pos = (pos - 1 + order.length) % order.length;
+  savePos();
   render();
 }
 
@@ -627,6 +633,14 @@ categoryFilter.addEventListener('change', ()=>{ buildOrder(); render(); });
 orderMode.addEventListener('change', ()=>{ buildOrder(); render(); });
 
 buildOrder();
+// restore last position
+try{
+  const saved = localStorage.getItem('it_flashcards_pos_v1');
+  if(saved !== null){
+    const n = parseInt(saved);
+    if(!isNaN(n) && n >= 0 && n < order.length) pos = n;
+  }
+}catch(e){}
 render();
 </script>
 </body>
